@@ -128,6 +128,7 @@ var count = 0
 
 //go:export TIMER1_IRQHandler
 func timerHandler(ptr uint32) {
+	logger.Println("timer tick!")
 	debug.Set(!debug.Get())
 	count++
 	//setColorLED(count % 8)
@@ -142,11 +143,45 @@ func greeting(x,y int, s string, col color.RGBA) {
 	drawText(x, y, s, col)
 }
 
+func evtCheck(adv *ble.Advertisement) error {
+	defer setColorLED(0)
+	b := make([]byte, 1408)
+	for {
+		setColorLED(0)
+		n, err := ble.EvtGet(b)
+		if err != nil {
+			return err
+		}
+		if n == 0 {
+			return nil
+		}
+		setColorLED(2)
+		var frame ble.EvtFrame
+		frame.UnmarshalBinary(b)
+		logger.Printf("event: %X", b[:n])
+		switch frame.ID {
+		case 0x10: // gap-connected
+			var ev ble.GapConnected
+			ev.UnmarshalBinary(frame.Payload)
+			logger.Println("connected:", ev.PeerAddr.Type, ev.Role, ev.AdvHandle)
+		case 0x11: // gap-disconnected
+			var ev ble.GapDisconnected
+			ev.UnmarshalBinary(frame.Payload)
+			logger.Println("disconnected:", ev.Reason)
+			logger.Println("advertize start")
+			if err := adv.Start(ConfigTag); err != nil {
+				logger.Println(err)
+				BlinkLoop(1, 1, 6, 6)
+			}
+		}
+	}
+}
+
 func main() {
 	msg := "Welcome to papyr!"
 	setColorLED(1)
 	logger.Println(msg)
-	greeting(10,10, msg, black)
+	//greeting(10,10, msg, black)
 	debug.Low()
 	setColorLED(2)
 	s140.SetupTimer1(1 * time.Second)
@@ -174,11 +209,14 @@ func main() {
 	options := &ble.AdvertiseOptions{
 		Interval: ble.NewAdvertiseInterval(100),
 	}
-	var advPayload = []byte("\x02\x01\x06" + "\x07\x09TinyGo")
-	if err := adv.Configure(advPayload, nil, options); err != nil {
+	advPayload := []byte("\x02\x01\x06" + "\x07\x09TinyGo")
+	var rspPayload []byte //:= []byte("\x02\x01\x06" + "\x07\x09tINYgO")
+	logger.Printf("adv: %p(%d)", &advPayload[0], len(advPayload))
+	if err := adv.Configure(advPayload, rspPayload, options); err != nil {
 		logger.Println(err)
 		BlinkLoop(1, 1, 1, 0)
 	}
+	logger.Println("advertize start")
 	if err := adv.Start(ConfigTag); err != nil {
 		logger.Println(err)
 		BlinkLoop(1, 1, 6, 6)
@@ -194,24 +232,13 @@ func main() {
 		logger.Println("temp_get failed:", err)
 		BlinkLoop(1, 1, 2, 2)
 	}
-	logger.Println("temp.:", float32(t-32)*5/9)
+	logger.Printf("temp.: %4.1f", t)
 	arm.EnableIRQ(nrf.IRQ_TIMER1)
 	setColorLED(0)
-	b := make([]byte, 1408)
 	for {
-		for {
-			n, err := ble.EvtGet(b)
-			if err != nil {
-				logger.Println("evt_get failed:", err)
-				break
-			}
-			if n > 0 {
-				setColorLED(2)
-				logger.Printf("event: %X", b[:n])
-				setColorLED(0)
-			}
+		if err := evtCheck(adv); err != nil {
+			logger.Println(err)
 		}
-		//time.Sleep(time.Second)
 		arm.Asm("wfi")
 	}
 }

@@ -1,5 +1,6 @@
 github.com/conejoninja/tinyfont v0.0.0-20190727195023-c6fa4e882988 h1:lVl5++HaPt0nJFO5+OO09jWwT6bVxLFTAwis3/zNCsM=
 github.com/conejoninja/tinyfont v0.0.0-20190727195023-c6fa4e882988/go.mod h1:Ee59XotuGqLsItAqq2lHT21B8mVZ2+aGvne2+zIuerg=
+github.com/erroneousboat/slack-term v0.4.1/go.mod h1:uih3r7mCIDb6fflYgqrcsVT3zGcKwEcMUDgr0nqsJ5M=
 github.com/tinygo-org/drivers v0.4.0 h1:Y98i/SJsQRmsiCR6zcwVSRYdbQXOo/kLcDT//oncUQk=
 tinygo.org/x/drivers v0.4.0 h1:AEqr0/ikNLL3fPFPQz5OfUYyfGLRwlhdg41FKfU3U3k=
 tinygo.org/x/drivers v0.4.0/go.mod h1:+v9+EIQbz1pn/l6RmwnqdsOQdQ3eN2GGTTh6bJffra4=

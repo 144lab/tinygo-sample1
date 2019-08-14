@@ -11,8 +11,6 @@
     "-I.",
     "-I{root}/lib/CMSIS/CMSIS/Include",
     "-I/opt/nRF5_SDK/components/softdevice/s140/headers",
-    "-I/opt/nRF5_SDK/components/libraries/delay",
-    "-I/opt/nRF5_SDK/components/libraries/util",
     "-I/opt/nRF5_SDK/modules/nrfx",
     "-I/opt/nRF5_SDK/modules/nrfx/templates",
     "-I/opt/nRF5_SDK/modules/nrfx/templates/nRF52840",

@@ -51,9 +51,9 @@ func Enable() error {
 		C.nrf_fault_handler_t(C.SoftdeviceAssertHandler)))
 }
 
-// TempGet ...
-func TempGet() (int, error) {
+// TempGet unit:Celsius（℃）
+func TempGet() (float32, error) {
 	var t C.int32_t
 	err := NrfError(C.sd_temp_get(&t))
-	return int(t), err
+	return float32(t) * 0.25, err
 }
