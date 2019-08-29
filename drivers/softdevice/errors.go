@@ -1,4 +1,4 @@
-package s140
+package softdevice
 
 // Error is an error from within the SoftDevice.
 type Error uint32

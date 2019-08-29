@@ -9,7 +9,7 @@ package ble
 import "C"
 
 import (
-	 "sample1/drivers/softdevice/s140"
+	sd "sample1/drivers/softdevice"
 )
 
 var (
@@ -25,13 +25,13 @@ func init() {
 // Enable ...
 func Enable() error {
 	appRAMBase := uint32(C.ApplicationRAMBaseAddress)
-	return s140.NrfError(C.sd_ble_enable(&appRAMBase))
+	return sd.NrfError(C.sd_ble_enable(&appRAMBase))
 }
 
 // GapDeviceNameSet ...
 func GapDeviceNameSet(name string) error {
 	deviceName = []byte(name)
-	return s140.NrfError(C.sd_ble_gap_device_name_set(
+	return sd.NrfError(C.sd_ble_gap_device_name_set(
 		&secModeOpen, &deviceName[0],
 		uint16(len(deviceName)),
 	))
@@ -42,7 +42,7 @@ func UUIDVsAdd(b [16]byte) (uint8, error) {
 	var uuid128 C.ble_uuid128_t
 	var typeUUID C.uint8_t
 	uuid128.uuid128 = b
-	return uint8(typeUUID), s140.NrfError(C.sd_ble_uuid_vs_add(
+	return uint8(typeUUID), sd.NrfError(C.sd_ble_uuid_vs_add(
 		&uuid128,
 		&typeUUID,
 	))
@@ -50,7 +50,7 @@ func UUIDVsAdd(b [16]byte) (uint8, error) {
 
 // UUIDVsRemove ...
 func UUIDVsRemove(typeUUID uint8) error {
-	return s140.NrfError(C.sd_ble_uuid_vs_remove(
+	return sd.NrfError(C.sd_ble_uuid_vs_remove(
 		&typeUUID,
 	))
 }
@@ -65,7 +65,7 @@ type Version struct {
 // VersionGet ...
 func VersionGet() (*Version, error) {
 	var version C.ble_version_t
-	err := s140.NrfError(C.sd_ble_version_get(&version))
+	err := sd.NrfError(C.sd_ble_version_get(&version))
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func VersionGet() (*Version, error) {
 
 // DefaultCfgSet ...
 func DefaultCfgSet(tag uint8, params *C.cfg_params_t) error {
-	return s140.NrfError(C.bleDefaultCfgSet(tag, params))
+	return sd.NrfError(C.bleDefaultCfgSet(tag, params))
 }
 
 // EvtGet ...
@@ -88,5 +88,5 @@ func EvtGet(b []byte) (int, error) {
 	if err == C.ErrorNotFound {
 		return 0, nil
 	}
-	return int(n), s140.NrfError(err)
+	return int(n), sd.NrfError(err)
 }

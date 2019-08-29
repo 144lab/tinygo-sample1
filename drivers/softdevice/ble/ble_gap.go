@@ -5,7 +5,7 @@ package ble
 #include "ble_gap.h"
 */
 import "C"
-import "sample1/drivers/softdevice/s140"
+import sd "sample1/drivers/softdevice"
 
 var (
 	gapConnParams C.ble_gap_conn_params_t
@@ -17,5 +17,5 @@ func GapPpcpSet() error {
 	gapConnParams.max_conn_interval = C.BLE_GAP_CP_MIN_CONN_INTVL_MAX
 	gapConnParams.slave_latency = 0
 	gapConnParams.conn_sup_timeout = C.BLE_GAP_CP_CONN_SUP_TIMEOUT_NONE
-	return s140.NrfError(C.sd_ble_gap_ppcp_set(&gapConnParams))
+	return sd.NrfError(C.sd_ble_gap_ppcp_set(&gapConnParams))
 }

@@ -1,4 +1,4 @@
-package s140
+package softdevice
 
 /*
 #define SVCALL_AS_NORMAL_FUNCTION

@@ -19,7 +19,7 @@
 
 # drivers folder
 
-- softdevice/s140: stub for nRF52840 with softdevice
+- softdevice/sd: stub for nRF52840 with softdevice
   - ble: BLE API
   - rtt: SEGGER_RTT logger
   - usbd: USB device API(WIP)

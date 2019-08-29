@@ -7,18 +7,20 @@ import (
 	"image/color"
 	"time"
 
-	"machine"
 	"device/arm"
 	"device/nrf"
+	"machine"
 
-	"sample1/drivers/softdevice/s140"
-	"sample1/drivers/softdevice/s140/ble"
-	"sample1/drivers/softdevice/s140/rtt"
+	sd "sample1/drivers/softdevice"
+	"sample1/drivers/softdevice/ble"
+	"sample1/drivers/softdevice/rtt"
+
 	//_ "github.com/tinygo-org/softdevice/usbd"
+
+	"sample1/drivers/waveshare-epd/epd2in13x"
 
 	"github.com/conejoninja/tinyfont"
 	"github.com/conejoninja/tinyfont/freemono"
-	"sample1/drivers/waveshare-epd/epd2in13x"
 	//"tinygo.org/x/drivers/waveshare-epd/epd2in13x"
 )
 
@@ -137,7 +139,7 @@ func timerHandler(ptr uint32) {
 	}
 }
 
-func greeting(x,y int, s string, col color.RGBA) {
+func greeting(x, y int, s string, col color.RGBA) {
 	beginDisplay()
 	defer finishDisplay()
 	drawText(x, y, s, col)
@@ -184,8 +186,8 @@ func main() {
 	//greeting(10,10, msg, black)
 	debug.Low()
 	setColorLED(2)
-	s140.SetupTimer1(1 * time.Second)
-	if err := s140.Enable(); err != nil {
+	sd.SetupTimer1(1 * time.Second)
+	if err := sd.Enable(); err != nil {
 		logger.Println("sd_softdevice_enable failed:", err)
 		BlinkLoop(1, 1, 0)
 	}
@@ -227,7 +229,7 @@ func main() {
 		BlinkLoop(1, 1, 4, 4)
 	}
 	logger.Printf("version: %d/%d/%d", ver.VersionNumber, ver.CompanyID, ver.SubversionNumber)
-	t, err := s140.TempGet()
+	t, err := sd.TempGet()
 	if err != nil {
 		logger.Println("temp_get failed:", err)
 		BlinkLoop(1, 1, 2, 2)

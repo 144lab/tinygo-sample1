@@ -7,7 +7,7 @@ package ble
 extern void setProperties(ble_gap_adv_properties_t *prop);
 */
 import "C"
-import "sample1/drivers/softdevice/s140"
+import sd "sample1/drivers/softdevice"
 
 // Advertisement encapsulates a single advertisement instance.
 type Advertisement struct {
@@ -59,15 +59,15 @@ func (a *Advertisement) Configure(broadcastData, scanResponseData []byte, option
 		interval: uint32(options.Interval),
 	}
 	C.setProperties(&params.properties)
-	return s140.NrfError(C.sd_ble_gap_adv_set_configure(&a.handle, &data, &params))
+	return sd.NrfError(C.sd_ble_gap_adv_set_configure(&a.handle, &data, &params))
 }
 
 // Start advertisement. May only be called after it has been configured.
 func (a *Advertisement) Start(tag uint8) error {
-	return s140.NrfError(C.sd_ble_gap_adv_start(a.handle, tag))
+	return sd.NrfError(C.sd_ble_gap_adv_start(a.handle, tag))
 }
 
 // Stop advertisement.
 func (a *Advertisement) Stop() error {
-	return s140.NrfError(C.sd_ble_gap_adv_stop(a.handle))
+	return sd.NrfError(C.sd_ble_gap_adv_stop(a.handle))
 }
